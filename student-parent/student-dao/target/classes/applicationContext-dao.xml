@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <bean id="config"
+    class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+    <property name="locations">
+      <array>
+        <value>classpath:db.properties</value>
+      </array>
+    </property>
+  </bean>
+
+<!--  
+  <bean id="studentMapper" class="org.zzw.dao.StudentDaoImpl">
+    <property name="sqlSessionFactory" ref="sqlSessionFacotry"></property>
+  </bean>  -->
+  <!-- 
+<bean id="studentMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+  <property name="mapperInterface" value="org.zzw.mapper.StudentMapper"></property>
+  <property name="sqlSessionFactory" ref="sqlSessionFacotry"></property>
+  </bean>   -->
+  
+  <!-- 批量把sqlSessionFacotry 交给Spring-->
+<bean  class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+  <property name="basePackage" value="org.student.mapper"></property>
+  <property name="sqlSessionFactoryBeanName" value="sqlSessionFacotry"></property>
+  </bean>
+  
+
+  <!--  
+   <bean id="studentController" class="org.zzw.controller.StudentController">
+    <property name="studentService" ref="studentService"></property>
+  </bean>-->
+
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <property name="driverClassName" value="${driver}"></property>
+    <property name="url" value="${url}"></property>
+    <property name="username" value="${username}"></property>
+    <property name="password" value="${password}"></property>
+  </bean>
+  
+  <!-- 在SpringIoc容器中 创建MyBatis的核心类 SqlSesionFactory -->
+  <bean id="sqlSessionFacotry" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"></property>
+    <!-- 加载mybatis配置文件 <property name="configLocation" value="classpath:conf.xml"></property> -->
+    <!-- 加载mapper.xml路径 -->    
+    <property name="mapperLocations" value="classpath:org/student/mapper/*.xml"></property>
+  </bean>
+
+
+</beans>
